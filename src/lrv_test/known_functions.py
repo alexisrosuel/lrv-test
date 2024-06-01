@@ -1,1 +1,0 @@
-X_MINUS_1_SQUARE = lambda x: (x  - 1) ** 2

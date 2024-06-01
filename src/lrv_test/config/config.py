@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from lrv_test.known_functions import X_MINUS_1_SQUARE
 from lrv_test.types import real_function
 
 
@@ -22,4 +21,3 @@ class LRVConfig:
     #     for only few functions"""
     #     if self.f.__code__.co_code not in {X_MINUS_1_SQUARE}:
     #         raise NotImplementedError
-
