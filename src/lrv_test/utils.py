@@ -3,6 +3,7 @@ from typing import Callable
 import numpy as np
 from scipy.integrate import quad
 
+from lrv_test.contour import Contour
 from lrv_test.types import real_function
 
 
@@ -16,13 +17,27 @@ def action_D_on_f(
 ) -> float:
     # Stietljes inversion formula to get the density from the transform, integrated
     # against f
-    y = 1e-10
+    y = 1e-20
     low, high = support
-    return np.imag(
+    return (
         quad(
-            lambda x: f(x) * g(x + 1j * y) / np.pi,
-            low * 0.5,
-            high * 2,
-            complex_func=True,
+            lambda x: f(x) * np.imag(g(x + 1j * y)) / np.pi,
+            low,
+            high
         )
     )[0]
+
+def contour_integral(integrand: Callable, contour: Contour) -> complex:
+    integrand_reparametrized = lambda t: integrand(contour.z(t)) * contour.dz(t)
+    return quad(
+            lambda z: integrand_reparametrized(z),
+            0,
+            1,
+            epsabs=1e-6, 
+            epsrel=1e-6, 
+            complex_func=True,
+        )[0]
+
+
+def psi(w: float, c: float) -> float:
+    return (w+1) * (w+c) / w 

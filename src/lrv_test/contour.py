@@ -24,6 +24,30 @@ class Contour:
         dz = lambda t: -1j * 2 * np.pi * radius * np.exp(-1j * t * 2 * np.pi)
         t_range = (0, 1)
         return cls(z, dz, t_range)
+    
+    @classmethod 
+    def from_rectangle_parameters(cls, min_x: float, max_x: float, min_y: float, max_y: float) -> Contour:
+        """Complex a rectangle countour, with edge points at min_x + min_y i,
+        min_x + max_y i, max_x + min_y i, min_x + min_y i.
+        Oriented counter-clockwise.
+        """
+        z = lambda t: (
+            min_x + (max_x - min_x) * (t < 0.5) * (t < 0.25) +
+            max_x * (t < 0.5) * (t >= 0.25) +
+            max_x - (max_x - min_x) * (t >= 0.5) * (t < 0.75) +
+            min_x + (max_y - min_y) * 1j * (t < 0.25) +
+            max_y * 1j * (t >= 0.25) * (t < 0.5) +
+            max_y - (max_y - min_y) * 1j * (t >= 0.5) * (t < 0.75) +
+            min_y * 1j * (t >= 0.75)
+        )
+        dz = lambda t: (
+            (max_x - min_x) * 1j * (t < 0.25) +
+            (max_y - min_y) * 1j * (t >= 0.25) * (t < 0.5) +
+            -(max_x - min_x) * 1j * (t >= 0.5) * (t < 0.75) +
+            -(max_y - min_y) * 1j * (t >= 0.75)
+        )
+        t_range = (0, 1)
+        return cls(z, dz, t_range)
 
 
 def create_contour(
